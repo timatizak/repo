@@ -7,11 +7,7 @@
       {{ loadbalancer_apiserver.address | default('') }},
       {%- endif -%}
       {%- if no_proxy_exclude_workers | default(false) -%}
-      {% set cluster_or_master = cluster_name + '_master' %}
-      {%- else -%}
-      {% set cluster_or_master = cluster_naem + '_slaves' %}
-      {%- endif -%}
-      {%- for item in (groups[cluster_or_master]|default([])|unique -%}
+      {%- for item in (groups[cluster_name + '_master']|default([]))|unique -%}
       {{ hostvars[item]['access_ip'] | default(hostvars[item]['ip'] | default(fallback_ips[item])) }},
       {%-   if item != hostvars[item].get('ansible_hostname', '') -%}
       {{ hostvars[item]['ansible_hostname'] }},
@@ -19,6 +15,16 @@
       {%-   endif -%}
       {{ item }},{{ item }}.{{ dns_domain }},
       {%- endfor -%}
+      {%- else -%}
+      {%- for item in (groups[cluster_name + '_master'] + groups[cluster_name + '_slaves']|default([]))|unique -%}
+      {{ hostvars[item]['access_ip'] | default(hostvars[item]['ip'] | default(fallback_ips[item])) }},
+      {%-   if item != hostvars[item].get('ansible_hostname', '') -%}
+      {{ hostvars[item]['ansible_hostname'] }},
+      {{ hostvars[item]['ansible_hostname'] }}.{{ dns_domain }},
+      {%-   endif -%}
+      {{ item }},{{ item }}.{{ dns_domain }},
+      {%- endfor -%}
+      {%- endif -%}
       {%- if additional_no_proxy is defined -%}
       {{ additional_no_proxy }},
       {%- endif -%}

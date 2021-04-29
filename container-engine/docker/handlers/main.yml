@@ -11,11 +11,11 @@
   systemd:
     daemon_reload: true
 
-    #- name: Docker | reload docker.socket
-    #service:
-    #name: docker.socket
-    #state: restarted
-    #when: ansible_os_family in ['Flatcar Container Linux by Kinvolk'] or is_fedora_coreos
+- name: Docker | reload docker.socket
+  service:
+    name: docker.socket
+    state: restarted
+  when: ansible_os_family in ['Flatcar Container Linux by Kinvolk'] or is_fedora_coreos
 
 - name: Docker | reload docker
   service:

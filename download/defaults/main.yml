@@ -659,7 +659,8 @@ downloads:
     tag: "{{ netcheck_server_image_tag }}"
     sha256: "{{ netcheck_server_digest_checksum|default(None) }}"
     groups:
-    - k8s-cluster
+    - "{{cluster_name}}_master"
+    - "{{cluster_name}}_slaves"
 
   netcheck_agent:
     enabled: "{{ deploy_netchecker }}"
@@ -668,7 +669,8 @@ downloads:
     tag: "{{ netcheck_agent_image_tag }}"
     sha256: "{{ netcheck_agent_digest_checksum|default(None) }}"
     groups:
-    - k8s-cluster
+    - "{{cluster_name}}_master"
+    - "{{cluster_name}}_slaves"
 
   etcd:
     container: "{{ etcd_deployment_type != 'host' }}"
@@ -686,8 +688,8 @@ downloads:
     owner: "root"
     mode: "0755"
     groups:
-    - etcd
-
+    - "{{cluster_name}}_master"
+    
   cni:
     enabled: true
     file: true
@@ -699,7 +701,8 @@ downloads:
     owner: "root"
     mode: "0755"
     groups:
-    - k8s-cluster
+    - "{{cluster_name}}_master"
+    - "{{cluster_name}}_slaves"
 
   kubeadm:
     enabled: true
@@ -712,7 +715,8 @@ downloads:
     owner: "root"
     mode: "0755"
     groups:
-    - k8s-cluster
+    - "{{cluster_name}}_master"
+    - "{{cluster_name}}_slaves"
   
   kubelet:
     enabled: true
@@ -725,7 +729,8 @@ downloads:
     owner: "root"
     mode: "0755"
     groups:
-    - k8s-cluster
+    - "{{cluster_name}}_master"
+    - "{{cluster_name}}_slaves"
 
 
   kubectl:
@@ -739,8 +744,8 @@ downloads:
     owner: "root"
     mode: "0755"
     groups:
-    - cluster_name + '_master'
-
+    - "{{cluster_name}}_master"
+    
 
   crictl:
     file: true
@@ -753,7 +758,9 @@ downloads:
     owner: "root"
     mode: "0755"
     groups:
-    - k8s-cluster
+    - "{{cluster_name}}_master"
+    - "{{cluster_name}}_slaves"
+
 
   crun:
     file: true
@@ -766,7 +773,9 @@ downloads:
     owner: "root"
     mode: "0755"
     groups:
-    - k8s-cluster
+    - "{{cluster_name}}_master"
+    - "{{cluster_name}}_slaves"
+
 
   kata_containers:
     enabled: "{{ kata_containers_enabled }}"
@@ -779,7 +788,9 @@ downloads:
     owner: "root"
     mode: "0755"
     groups:
-    - k8s-cluster
+    - "{{cluster_name}}_master"
+    - "{{cluster_name}}_slaves"
+
 
   cilium:
     enabled: "{{ kube_network_plugin == 'cilium' or cilium_deploy_additionally | default(false) | bool }}"
@@ -788,7 +799,9 @@ downloads:
     tag: "{{ cilium_image_tag }}"
     sha256: "{{ cilium_digest_checksum|default(None) }}"
     groups:
-    - k8s-cluster
+    - "{{cluster_name}}_master"
+    - "{{cluster_name}}_slaves"
+
 
   cilium_init:
     enabled: "{{ kube_network_plugin == 'cilium' or cilium_deploy_additionally | default(false) | bool }}"
@@ -797,7 +810,9 @@ downloads:
     tag: "{{ cilium_init_image_tag }}"
     sha256: "{{ cilium_init_digest_checksum|default(None) }}"
     groups:
-    - k8s-cluster
+    - "{{cluster_name}}_master"
+    - "{{cluster_name}}_slaves"
+
 
   cilium_operator:
     enabled: "{{ kube_network_plugin == 'cilium' or cilium_deploy_additionally | default(false) | bool }}"
@@ -806,7 +821,9 @@ downloads:
     tag: "{{ cilium_operator_image_tag }}"
     sha256: "{{ cilium_operator_digest_checksum|default(None) }}"
     groups:
-    - k8s-cluster
+    - "{{cluster_name}}_master"
+    - "{{cluster_name}}_slaves"
+
 
   multus:
     enabled: "{{ kube_network_plugin_multus }}"
@@ -815,7 +832,9 @@ downloads:
     tag: "{{ multus_image_tag }}"
     sha256: "{{ multus_digest_checksum|default(None) }}"
     groups:
-    - k8s-cluster
+    - "{{cluster_name}}_master"
+    - "{{cluster_name}}_slaves"
+
 
   flannel:
     enabled: "{{ kube_network_plugin == 'flannel' or kube_network_plugin == 'canal' }}"
@@ -824,7 +843,9 @@ downloads:
     tag: "{{ flannel_image_tag }}"
     sha256: "{{ flannel_digest_checksum|default(None) }}"
     groups:
-    - k8s-cluster
+    - "{{cluster_name}}_master"
+    - "{{cluster_name}}_slaves"
+
 
   calicoctl:
     enabled: "{{ kube_network_plugin == 'calico' or kube_network_plugin == 'canal' }}"
@@ -837,7 +858,8 @@ downloads:
     owner: "root"
     mode: "0755"
     groups:
-    - k8s-cluster
+    - "{{cluster_name}}_master"
+    - "{{cluster_name}}_slaves"
 
   calico_node:
     enabled: "{{ kube_network_plugin == 'calico' or kube_network_plugin == 'canal' }}"
@@ -846,7 +868,9 @@ downloads:
     tag: "{{ calico_node_image_tag }}"
     sha256: "{{ calico_node_digest_checksum|default(None) }}"
     groups:
-    - k8s-cluster
+    - "{{cluster_name}}_master"
+    - "{{cluster_name}}_slaves"
+
 
   calico_cni:
     enabled: "{{ kube_network_plugin == 'calico' or kube_network_plugin == 'canal' }}"
@@ -855,7 +879,9 @@ downloads:
     tag: "{{ calico_cni_image_tag }}"
     sha256: "{{ calico_cni_digest_checksum|default(None) }}"
     groups:
-    - k8s-cluster
+    - "{{cluster_name}}_master"
+    - "{{cluster_name}}_slaves"
+
 
   calico_policy:
     enabled: "{{ enable_network_policy and kube_network_plugin in ['calico', 'canal'] }}"
@@ -864,7 +890,9 @@ downloads:
     tag: "{{ calico_policy_image_tag }}"
     sha256: "{{ calico_policy_digest_checksum|default(None) }}"
     groups:
-    - k8s-cluster
+    - "{{cluster_name}}_master"
+    - "{{cluster_name}}_slaves"
+
 
   calico_typha:
     enabled: "{{ typha_enabled }}"
@@ -873,7 +901,9 @@ downloads:
     tag: "{{ calico_typha_image_tag }}"
     sha256: "{{ calico_typha_digest_checksum|default(None) }}"
     groups:
-    - k8s-cluster
+    - "{{cluster_name}}_master"
+    - "{{cluster_name}}_slaves"
+
 
   calico_crds:
     file: true
@@ -890,8 +920,8 @@ downloads:
     owner: "root"
     mode: "0755"
     groups:
-    - kube_control_plane
-
+    - "{{cluster_name}}_master"
+    
   weave_kube:
     enabled: "{{ kube_network_plugin == 'weave' }}"
     container: true
@@ -899,7 +929,8 @@ downloads:
     tag: "{{ weave_kube_image_tag }}"
     sha256: "{{ weave_kube_digest_checksum|default(None) }}"
     groups:
-    - k8s-cluster
+    - "{{cluster_name}}_master"
+    - "{{cluster_name}}_slaves"
 
   weave_npc:
     enabled: "{{ kube_network_plugin == 'weave' }}"
@@ -908,7 +939,8 @@ downloads:
     tag: "{{ weave_npc_image_tag }}"
     sha256: "{{ weave_npc_digest_checksum|default(None) }}"
     groups:
-    - k8s-cluster
+    - "{{cluster_name}}_master"
+    - "{{cluster_name}}_slaves"
 
   ovn4nfv:
     enabled: "{{ kube_network_plugin == 'ovn4nfv' }}"
@@ -917,7 +949,8 @@ downloads:
     tag: "{{ ovn4nfv_k8s_plugin_image_tag }}"
     sha256: "{{ ovn4nfv_k8s_plugin_digest_checksum|default(None) }}"
     groups:
-    - k8s-cluster
+    - "{{cluster_name}}_master"
+    - "{{cluster_name}}_slaves"
 
   kube_ovn:
     enabled: "{{ kube_network_plugin == 'kube-ovn' }}"
@@ -926,7 +959,9 @@ downloads:
     tag: "{{ kube_ovn_container_image_tag }}"
     sha256: "{{ kube_ovn_digest_checksum|default(None) }}"
     groups:
-    - k8s-cluster
+    - "{{cluster_name}}_master"
+    - "{{cluster_name}}_slaves"
+
 
   kube_router:
     enabled: "{{ kube_network_plugin == 'kube-router' }}"
@@ -935,7 +970,9 @@ downloads:
     tag: "{{ kube_router_image_tag }}"
     sha256: "{{ kube_router_digest_checksum|default(None) }}"
     groups:
-    - k8s-cluster
+    - "{{cluster_name}}_master"
+    - "{{cluster_name}}_slaves"
+
 
   pod_infra:
     enabled: true
@@ -944,7 +981,9 @@ downloads:
     tag: "{{ pod_infra_image_tag }}"
     sha256: "{{ pod_infra_digest_checksum|default(None) }}"
     groups:
-    - k8s-cluster
+    - "{{cluster_name}}_master"
+    - "{{cluster_name}}_slaves"
+
 
   install_socat:
     enabled: "{{ ansible_os_family in ['Flatcar Container Linux by Kinvolk'] }}"
@@ -953,7 +992,9 @@ downloads:
     tag: "{{ install_socat_image_tag }}"
     sha256: "{{ install_socat_digest_checksum|default(None) }}"
     groups:
-    - k8s-cluster
+    - "{{cluster_name}}_master"
+    - "{{cluster_name}}_slaves"
+
 
   nginx:
     enabled: "{{ loadbalancer_apiserver_localhost and loadbalancer_apiserver_type == 'nginx' }}"
@@ -962,7 +1003,7 @@ downloads:
     tag: "{{ nginx_image_tag }}"
     sha256: "{{ nginx_digest_checksum|default(None) }}"
     groups:
-    - kube-node
+    - "{{cluster_name}}_slaves"
 
   haproxy:
     enabled: "{{ loadbalancer_apiserver_localhost and loadbalancer_apiserver_type == 'haproxy' }}"
@@ -971,7 +1012,7 @@ downloads:
     tag: "{{ haproxy_image_tag }}"
     sha256: "{{ haproxy_digest_checksum|default(None) }}"
     groups:
-    - kube-node
+    - "{{cluster_name}}_slaves"
 
   coredns:
     enabled: "{{ dns_mode in ['coredns', 'coredns_dual'] }}"
@@ -980,7 +1021,8 @@ downloads:
     tag: "{{ coredns_image_tag }}"
     sha256: "{{ coredns_digest_checksum|default(None) }}"
     groups:
-    - kube_control_plane
+    - "{{cluster_name}}_master"
+    - "{{cluster_name}}_slaves"
 
   nodelocaldns:
     enabled: "{{ enable_nodelocaldns }}"
@@ -989,7 +1031,9 @@ downloads:
     tag: "{{ nodelocaldns_image_tag }}"
     sha256: "{{ nodelocaldns_digest_checksum|default(None) }}"
     groups:
-    - k8s-cluster
+    - "{{cluster_name}}_master"
+    - "{{cluster_name}}_slaves"
+
 
   dnsautoscaler:
     enabled: "{{ dns_mode in ['coredns', 'coredns_dual'] }}"
@@ -998,7 +1042,7 @@ downloads:
     tag: "{{ dnsautoscaler_image_tag }}"
     sha256: "{{ dnsautoscaler_digest_checksum|default(None) }}"
     groups:
-    - kube_control_plane
+    - "{{cluster_name}}_master"
 
   testbox:
     enabled: false
@@ -1018,8 +1062,8 @@ downloads:
     owner: "root"
     mode: "0755"
     groups:
-    - kube_control_plane
-
+    - "{{cluster_name}}_master"
+    
   registry:
     enabled: "{{ registry_enabled }}"
     container: true
@@ -1027,7 +1071,8 @@ downloads:
     tag: "{{ registry_image_tag }}"
     sha256: "{{ registry_digest_checksum|default(None) }}"
     groups:
-    - kube-node
+    - "{{cluster_name}}_slaves"
+
 
   registry_proxy:
     enabled: "{{ registry_enabled }}"
@@ -1036,7 +1081,8 @@ downloads:
     tag: "{{ registry_proxy_image_tag }}"
     sha256: "{{ registry_proxy_digest_checksum|default(None) }}"
     groups:
-    - kube-node
+    - "{{cluster_name}}_slaves"
+
 
   metrics_server:
     enabled: "{{ metrics_server_enabled }}"
@@ -1045,7 +1091,8 @@ downloads:
     tag: "{{ metrics_server_image_tag }}"
     sha256: "{{ metrics_server_digest_checksum|default(None) }}"
     groups:
-    - kube_control_plane
+    - "{{cluster_name}}_master"
+
 
   addon_resizer:
     # Currently addon_resizer is only used by metrics server
@@ -1055,7 +1102,7 @@ downloads:
     tag: "{{ addon_resizer_image_tag }}"
     sha256: "{{ addon_resizer_digest_checksum|default(None) }}"
     groups:
-    - kube_control_plane
+    - "{{cluster_name}}_master"
 
   local_volume_provisioner:
     enabled: "{{ local_volume_provisioner_enabled }}"
@@ -1064,7 +1111,8 @@ downloads:
     tag: "{{ local_volume_provisioner_image_tag }}"
     sha256: "{{ local_volume_provisioner_digest_checksum|default(None) }}"
     groups:
-    - kube-node
+    - "{{cluster_name}}_slaves"
+
 
   cephfs_provisioner:
     enabled: "{{ cephfs_provisioner_enabled }}"
@@ -1073,7 +1121,8 @@ downloads:
     tag: "{{ cephfs_provisioner_image_tag }}"
     sha256: "{{ cephfs_provisioner_digest_checksum|default(None) }}"
     groups:
-    - kube-node
+    - "{{cluster_name}}_slaves"
+
 
   rbd_provisioner:
     enabled: "{{ rbd_provisioner_enabled }}"
@@ -1082,7 +1131,8 @@ downloads:
     tag: "{{ rbd_provisioner_image_tag }}"
     sha256: "{{ rbd_provisioner_digest_checksum|default(None) }}"
     groups:
-    - kube-node
+    - "{{cluster_name}}_slaves"
+
 
   local_path_provisioner:
     enabled: "{{ local_path_provisioner_enabled }}"
@@ -1091,7 +1141,8 @@ downloads:
     tag: "{{ local_path_provisioner_image_tag }}"
     sha256: "{{ local_path_provisioner_digest_checksum|default(None) }}"
     groups:
-    - kube-node
+    - "{{cluster_name}}_slaves"
+
 
   ingress_nginx_controller:
     enabled: "{{ ingress_nginx_enabled }}"
@@ -1100,7 +1151,8 @@ downloads:
     tag: "{{ ingress_nginx_controller_image_tag }}"
     sha256: "{{ ingress_nginx_controller_digest_checksum|default(None) }}"
     groups:
-    - kube-node
+    - "{{cluster_name}}_slaves"
+
 
   ingress_ambassador_controller:
     enabled: "{{ ingress_ambassador_enabled }}"
@@ -1109,7 +1161,8 @@ downloads:
     tag: "{{ ingress_ambassador_image_tag }}"
     sha256: "{{ ingress_ambassador_digest_checksum|default(None) }}"
     groups:
-    - kube-node
+    - "{{cluster_name}}_slaves"
+
 
   ingress_alb_controller:
     enabled: "{{ ingress_alb_enabled }}"
@@ -1118,7 +1171,8 @@ downloads:
     tag: "{{ alb_ingress_image_tag }}"
     sha256: "{{ ingress_alb_controller_digest_checksum|default(None) }}"
     groups:
-    - kube-node
+    - "{{cluster_name}}_slaves"
+
 
   cert_manager_controller:
     enabled: "{{ cert_manager_enabled }}"
@@ -1127,7 +1181,8 @@ downloads:
     tag: "{{ cert_manager_controller_image_tag }}"
     sha256: "{{ cert_manager_controller_digest_checksum|default(None) }}"
     groups:
-    - kube-node
+    - "{{cluster_name}}_slaves"
+
 
   cert_manager_cainjector:
     enabled: "{{ cert_manager_enabled }}"
@@ -1136,7 +1191,8 @@ downloads:
     tag: "{{ cert_manager_cainjector_image_tag }}"
     sha256: "{{ cert_manager_cainjector_digest_checksum|default(None) }}"
     groups:
-    - kube-node
+    - "{{cluster_name}}_slaves"
+
 
   cert_manager_webhook:
     enabled: "{{ cert_manager_enabled }}"
@@ -1145,7 +1201,8 @@ downloads:
     tag: "{{ cert_manager_webhook_image_tag }}"
     sha256: "{{ cert_manager_webhook_digest_checksum|default(None) }}"
     groups:
-    - kube-node
+    - "{{cluster_name}}_slaves"
+
 
   csi_attacher:
     enabled: "{{ cinder_csi_enabled or aws_ebs_csi_enabled }}"
@@ -1154,7 +1211,8 @@ downloads:
     tag: "{{ csi_attacher_image_tag }}"
     sha256: "{{ csi_attacher_digest_checksum|default(None) }}"
     groups:
-    - kube-node
+    - "{{cluster_name}}_slaves"
+
 
   csi_provisioner:
     enabled: "{{ cinder_csi_enabled or aws_ebs_csi_enabled }}"
@@ -1163,7 +1221,8 @@ downloads:
     tag: "{{ csi_provisioner_image_tag }}"
     sha256: "{{ csi_provisioner_digest_checksum|default(None) }}"
     groups:
-    - kube-node
+    - "{{cluster_name}}_slaves"
+
 
   csi_snapshotter:
     enabled: "{{ cinder_csi_enabled or aws_ebs_csi_enabled }}"
@@ -1172,7 +1231,8 @@ downloads:
     tag: "{{ csi_snapshotter_image_tag }}"
     sha256: "{{ csi_snapshotter_digest_checksum|default(None) }}"
     groups:
-    - kube-node
+    - "{{cluster_name}}_slaves"
+
 
   snapshot_controller:
     enabled: "{{ cinder_csi_enabled }}"
@@ -1181,7 +1241,8 @@ downloads:
     tag: "{{ snapshot_controller_image_tag }}"
     sha256: "{{ snapshot_controller_digest_checksum|default(None) }}"
     groups:
-    - kube-node
+    - "{{cluster_name}}_slaves"
+
 
   csi_resizer:
     enabled: "{{ cinder_csi_enabled or aws_ebs_csi_enabled }}"
@@ -1190,7 +1251,7 @@ downloads:
     tag: "{{ csi_resizer_image_tag }}"
     sha256: "{{ csi_resizer_digest_checksum|default(None) }}"
     groups:
-    - kube-node
+    - "{{cluster_name}}_slaves"
 
   csi_node_driver_registrar:
     enabled: "{{ cinder_csi_enabled or aws_ebs_csi_enabled }}"
@@ -1199,7 +1260,8 @@ downloads:
     tag: "{{ csi_node_driver_registrar_image_tag }}"
     sha256: "{{ csi_node_driver_registrar_digest_checksum|default(None) }}"
     groups:
-    - kube-node
+    - "{{cluster_name}}_slaves"
+
 
   cinder_csi_plugin:
     enabled: "{{ cinder_csi_enabled }}"
@@ -1208,7 +1270,8 @@ downloads:
     tag: "{{ cinder_csi_plugin_image_tag }}"
     sha256: "{{ cinder_csi_plugin_digest_checksum|default(None) }}"
     groups:
-    - kube-node
+    - "{{cluster_name}}_slaves"
+
 
   aws_ebs_csi_plugin:
     enabled: "{{ aws_ebs_csi_enabled }}"
@@ -1217,7 +1280,8 @@ downloads:
     tag: "{{ aws_ebs_csi_plugin_image_tag }}"
     sha256: "{{ aws_ebs_csi_plugin_digest_checksum|default(None) }}"
     groups:
-    - kube-node
+    - "{{cluster_name}}_slaves"
+
 
   dashboard:
     enabled: "{{ dashboard_enabled }}"
@@ -1226,7 +1290,9 @@ downloads:
     tag: "{{ dashboard_image_tag }}"
     sha256: "{{ dashboard_digest_checksum|default(None) }}"
     groups:
-    - kube_control_plane
+    - "{{cluster_name}}_master"
+    - "{{cluster_name}}_slaves"
+
 
   dashboard_metrics_scrapper:
     enabled: "{{ dashboard_enabled }}"
@@ -1235,8 +1301,8 @@ downloads:
     tag: "{{ dashboard_metrics_scraper_tag }}"
     sha256: "{{ dashboard_digest_checksum|default(None) }}"
     groups:
-    - kube_control_plane
-
+    - "{{cluster_name}}_master"
+    
 download_defaults:
   container: false
   file: false

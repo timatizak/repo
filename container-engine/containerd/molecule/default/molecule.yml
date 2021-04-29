@@ -12,7 +12,7 @@ platforms:
     cpus: 2
     memory: 1024
     groups:
-      - kube-master
+      - "{{cluster_name}}_master" 
 provisioner:
   name: ansible
   env:

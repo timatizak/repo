@@ -59,7 +59,7 @@
                     {{ m }}
                   {% endif %}
                 {% endfor %}"
-    - HOSTS: "{% for h in (groups[cluster_name + '_master'] + groups[cluster_name + '_slaves']|default([]))|unique %}
+    - HOSTS: "{% for h in (groups[cluster_name + '_master'] + groups[cluster_name + '_slaves'])|unique %}
                 {% if gen_node_certs[h] %}
                     {{ h }}
                 {% endif %}
@@ -109,7 +109,7 @@
     src: "{{ item }}"
   register: etcd_master_node_certs
   with_items:
-    - "[{% for node in (groups[cluster_name + '_master'] + groups[cluster_name + '_slaves']|default([]))|unique %}
+    - "[{% for node in (groups[cluster_name + '_master'] + groups[cluster_name + '_slaves'])|unique %}
         '{{ etcd_cert_dir }}/node-{{ node }}.pem',
         '{{ etcd_cert_dir }}/node-{{ node }}-key.pem',
         {% endfor %}]"
@@ -144,8 +144,8 @@
 - name: "Check_certs | Set 'sync_certs' to true on nodes"
   set_fact:
     sync_certs: true
-  when: (inventory_hostname in groups[cluster_name + '_slaves']) and
-        inventory_hostname not in groups[cluster_name + '_master']
+  when: (('calico-rr' in groups and inventory_hostname in groups['calico-rr']) or
+        inventory_hostname in groups[cluster_name + '_slaves'])
   with_items:
     - "{{ my_etcd_node_certs }}"
 
@@ -154,12 +154,12 @@
   args:
     executable: /bin/bash
     warn: false
-  no_log: true
+    #no_log: true
   register: etcd_node_certs
   check_mode: no
   delegate_to: "{{ groups[cluster_name + '_master'][0] }}"
-  when: (inventory_hostname in groups[cluster_name + '_slaves']) and
-        sync_certs|default(false) and inventory_hostname not in groups[cluster_name + '_master']
+  when: inventory_hostname in groups[cluster_name + '_slaves'] and sync_certs|default(false)
+
 
 - name: Gen_certs | Copy certs on nodes
   shell: "set -o pipefail && base64 -d <<< '{{ etcd_node_certs.stdout|quote }}' | tar xz -C {{ etcd_cert_dir }}"
@@ -168,8 +168,8 @@
   no_log: true
   changed_when: false
   check_mode: no
-  when: (inventory_hostname in groups[cluster_name + '_slaves']) and
-        sync_certs|default(false) and inventory_hostname not in groups[cluster_name + '_master']
+  when: (('calico-rr' in groups and inventory_hostname in groups['calico-rr']) or
+        inventory_hostname in groups[cluster_name + '_slaves']) and sync_certs|default(false)
   notify: set etcd_secret_changed
 
 - name: Gen_certs | check certificate permissions

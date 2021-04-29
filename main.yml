@@ -14,13 +14,13 @@
     - include_role:
         name: bootstrap-os
     - include_role:
-        name: etcd
+        name: preinstall
     - include_role:
         name: container-engine
     - include_role:
         name: download
     - include_role:
-        name: preinstall
+        name: etcd
     - include_role:
         name: node
     - include_role:

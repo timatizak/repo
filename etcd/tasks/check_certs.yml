@@ -34,7 +34,7 @@
     path: "{{ etcd_cert_dir }}/{{ item }}"
   register: etcd_node_certs
   when: (('calico-rr' in groups and inventory_hostname in groups['calico-rr']) or
-        (inventory_hostname in groups[cluster_name + '_master'] and inventory_hostname in groups[cluster_name + '_slaves']))
+        (inventory_hostname in groups[cluster_name + '_master'] or inventory_hostname in groups[cluster_name + '_slaves']))
   with_items:
     - ca.pem
     - node-{{ inventory_hostname }}.pem
@@ -126,7 +126,7 @@
     kubernetes_host_requires_sync: true
   when:
     - (('calico-rr' in groups and inventory_hostname in groups['calico-rr']) or
-      (inventory_hostname in groups[cluster_name + '_master'] and inventory_hostname in groups[cluster_name + '_slaves']))
+      inventory_hostname in groups[cluster_name + '_master'])
     - (not etcd_node_certs.results[0].stat.exists|default(false)) or
       (not etcd_node_certs.results[1].stat.exists|default(false)) or
       (not etcd_node_certs.results[2].stat.exists|default(false)) or
