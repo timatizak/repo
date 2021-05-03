@@ -28,8 +28,8 @@
 
 - name: Stop if unsupported version of Kubernetes
   assert:
-    that: kube_version is version(kube_version_min_required, '>=')
-    msg: "The current release of Kubespray only support newer version of Kubernetes than {{ kube_version_min_required }} - You are trying to apply {{ kube_version }}"
+    that: kubernetes_version is version(kubernetes_version_min_required, '>=')
+    msg: "The current release of Kubespray only support newer version of Kubernetes than {{ kubernetes_version_min_required }} - You are trying to apply {{ kubernetes_version }}"
   when: not ignore_assert_errors
 
 # simplify this items-list when   https://github.com/ansible/ansible/issues/15753  is resolved

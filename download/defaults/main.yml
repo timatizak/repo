@@ -49,7 +49,7 @@ download_delegate: "{% if download_localhost %}localhost{% else %}{{ groups[clus
 image_arch: "{{host_architecture | default('amd64')}}"
 
 # Versions
-kubeadm_version: "{{ kube_version }}"
+kubeadm_version: "{{ kubernetes_version }}"
 etcd_version: v3.4.13
 crun_version: 0.19
 kata_containers_version: 1.12.1
@@ -86,7 +86,7 @@ ovn4nfv_k8s_plugin_image_version: "v1.1.0"
 helm_version: "v3.5.3"
 
 # Get kubernetes major version (i.e. 1.17.4 => 1.17)
-kube_major_version: "{{ kube_version | regex_replace('^v([0-9])+\\.([0-9]+)\\.[0-9]+', 'v\\1.\\2') }}"
+kube_major_version: "{{ kubernetes_version | regex_replace('^v([0-9])+\\.([0-9]+)\\.[0-9]+', 'v\\1.\\2') }}"
 crictl_supported_versions:
   v1.20: "v1.20.0"
   v1.19: "v1.19.0"
@@ -94,8 +94,8 @@ crictl_supported_versions:
 crictl_version: "{{ crictl_supported_versions[kube_major_version] }}"
 
 # Download URLs
-kubelet_download_url: "https://storage.googleapis.com/kubernetes-release/release/{{ kube_version }}/bin/linux/{{ image_arch }}/kubelet"
-kubectl_download_url: "https://storage.googleapis.com/kubernetes-release/release/{{ kube_version }}/bin/linux/{{ image_arch }}/kubectl"
+kubelet_download_url: "https://storage.googleapis.com/kubernetes-release/release/{{ kubernetes_version }}/bin/linux/{{ image_arch }}/kubelet"
+kubectl_download_url: "https://storage.googleapis.com/kubernetes-release/release/{{ kubernetes_version }}/bin/linux/{{ image_arch }}/kubectl"
 kubeadm_download_url: "https://storage.googleapis.com/kubernetes-release/release/{{ kubeadm_version }}/bin/linux/{{ image_arch }}/kubeadm"
 etcd_download_url: "https://github.com/coreos/etcd/releases/download/{{ etcd_version }}/etcd-{{ etcd_version }}-linux-{{ image_arch }}.tar.gz"
 cni_download_url: "https://github.com/containernetworking/plugins/releases/download/{{ cni_version }}/cni-plugins-linux-{{ image_arch }}-{{ cni_version }}.tgz"
@@ -490,8 +490,8 @@ kata_containers_binary_checksums:
 
 etcd_binary_checksum: "{{ etcd_binary_checksums[image_arch] }}"
 cni_binary_checksum: "{{ cni_binary_checksums[image_arch] }}"
-kubelet_binary_checksum: "{{ kubelet_checksums[image_arch][kube_version] }}"
-kubectl_binary_checksum: "{{ kubectl_checksums[image_arch][kube_version] }}"
+kubelet_binary_checksum: "{{ kubelet_checksums[image_arch][kubernetes_version] }}"
+kubectl_binary_checksum: "{{ kubectl_checksums[image_arch][kubernetes_version] }}"
 kubeadm_binary_checksum: "{{ kubeadm_checksums[image_arch][kubeadm_version] }}"
 calicoctl_binary_checksum: "{{ calicoctl_binary_checksums[image_arch][calico_ctl_version] }}"
 calico_crds_archive_checksum: "{{ calico_crds_archive_checksums[calico_version] }}"
@@ -721,8 +721,8 @@ downloads:
   kubelet:
     enabled: true
     file: true
-    version: "{{ kube_version }}"
-    dest: "{{ local_release_dir }}/kubelet-{{ kube_version }}-{{ image_arch }}"
+    version: "{{ kubernetes_version }}"
+    dest: "{{ local_release_dir }}/kubelet-{{ kubernetes_version }}-{{ image_arch }}"
     sha256: "{{ kubelet_binary_checksum }}"
     url: "{{ kubelet_download_url }}"
     unarchive: false
@@ -736,8 +736,8 @@ downloads:
   kubectl:
     enabled: true
     file: true
-    version: "{{ kube_version }}"
-    dest: "{{ local_release_dir }}/kubectl-{{ kube_version }}-{{ image_arch }}"
+    version: "{{ kubernetes_version }}"
+    dest: "{{ local_release_dir }}/kubectl-{{ kubernetes_version }}-{{ image_arch }}"
     sha256: "{{ kubectl_binary_checksum }}"
     url: "{{ kubectl_download_url }}"
     unarchive: false

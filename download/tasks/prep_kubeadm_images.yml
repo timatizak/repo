@@ -9,14 +9,14 @@
 
 #- name: prep_kubeadm_images | Copy kubelet binary from download dir to system path
 # copy:
-#   src: "{{ local_release_dir }}/kubelet-{{ kube_version }}-{{ image_arch }}"
+#   src: "{{ local_release_dir }}/kubelet-{{ kubernetes_version }}-{{ image_arch }}"
 #   dest: "{{ bin_dir }}/kubelet"
 #   mode: 0755
 #   remote_src: true
 
 - name: prep_kubeadm_images | Check kubeadm version matches kubernetes version
   fail:
-    msg: "Kubeadm version {{ kubeadm_version }} do not matches kubernetes {{ kube_version }}"
+    msg: "Kubeadm version {{ kubeadm_version }} do not matches kubernetes {{ kubernetes_version }}"
   when:
     - not skip_downloads | default(false)
     - not kubeadm_version == downloads.kubeadm.version
